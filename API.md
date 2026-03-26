@@ -1,6 +1,6 @@
 # AutoLib API Reference
 
-**Base URL:** `https://api.autolib.dev/api`  
+**Base URL:** `/api`  
 **Version:** 1.0.0
 
 ---
@@ -35,7 +35,7 @@ All feature endpoints require an API key passed as a Bearer token in the `Author
 Authorization: Bearer al_YOUR_API_KEY
 ```
 
-API keys are generated from your dashboard at [autolib.dev/dashboard/keys](https://autolib.dev/dashboard/keys).
+API keys are generated from your dashboard at [/dashboard/keys](/dashboard/keys).
 
 **Key format:** Keys always start with `al_` followed by 37 random characters (40 chars total).
 
@@ -48,7 +48,7 @@ API keys are generated from your dashboard at [autolib.dev/dashboard/keys](https
 **Example:**
 
 ```bash
-curl -X POST https://api.autolib.dev/api/scrape \
+curl -X POST /api/scrape \
   -H "Authorization: Bearer al_xK9mP2qRt7vBnLwZdYcE3jHsUoAiMfGpX8eK1" \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com"}'
@@ -85,7 +85,7 @@ When you exceed your limit, the API returns `429 Too Many Requests`:
   "limit": 500,
   "plan": "starter",
   "resets": "2024-02-01",
-  "upgrade": "https://autolib.dev/billing"
+  "upgrade": "/billing"
 }
 ```
 
@@ -103,7 +103,7 @@ Error responses always include an `error` field:
 {
   "error": "Description of what went wrong.",
   "hint": "Optional guidance on how to fix it.",
-  "docs": "https://docs.autolib.dev/relevant-page"
+  "docs": "/relevant-page"
 }
 ```
 
@@ -134,7 +134,7 @@ Check API status. No authentication required.
 **Request:**
 
 ```bash
-curl https://api.autolib.dev/api/health
+curl /api/health
 ```
 
 **Response:**
@@ -171,7 +171,7 @@ Scrape content from any web page using CSS selectors.
 #### Example — scrape text with CSS selector
 
 ```bash
-curl -X POST https://api.autolib.dev/api/scrape \
+curl -X POST /api/scrape \
   -H "Authorization: Bearer al_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -197,7 +197,7 @@ curl -X POST https://api.autolib.dev/api/scrape \
 #### Example — extract all hrefs from a page
 
 ```bash
-curl -X POST https://api.autolib.dev/api/scrape \
+curl -X POST /api/scrape \
   -H "Authorization: Bearer al_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -222,7 +222,7 @@ curl -X POST https://api.autolib.dev/api/scrape \
 #### Example — get raw HTML (no selector)
 
 ```bash
-curl -X POST https://api.autolib.dev/api/scrape \
+curl -X POST /api/scrape \
   -H "Authorization: Bearer al_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -242,7 +242,7 @@ curl -X POST https://api.autolib.dev/api/scrape \
 #### Example — JS-rendered page (Pro+ only)
 
 ```bash
-curl -X POST https://api.autolib.dev/api/scrape \
+curl -X POST /api/scrape \
   -H "Authorization: Bearer al_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -266,7 +266,7 @@ curl -X POST https://api.autolib.dev/api/scrape \
 #### Example — custom headers
 
 ```bash
-curl -X POST https://api.autolib.dev/api/scrape \
+curl -X POST /api/scrape \
   -H "Authorization: Bearer al_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -319,7 +319,7 @@ Convert HTML or a URL to a PDF file.
 #### Example — HTML to PDF
 
 ```bash
-curl -X POST https://api.autolib.dev/api/pdf \
+curl -X POST /api/pdf \
   -H "Authorization: Bearer al_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -334,7 +334,7 @@ curl -X POST https://api.autolib.dev/api/pdf \
 #### Example — URL to PDF
 
 ```bash
-curl -X POST https://api.autolib.dev/api/pdf \
+curl -X POST /api/pdf \
   -H "Authorization: Bearer al_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -349,7 +349,7 @@ curl -X POST https://api.autolib.dev/api/pdf \
 #### Example — custom margins and font size
 
 ```bash
-curl -X POST https://api.autolib.dev/api/pdf \
+curl -X POST /api/pdf \
   -H "Authorization: Bearer al_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -369,7 +369,7 @@ curl -X POST https://api.autolib.dev/api/pdf \
 #### Example — view in browser (inline)
 
 ```bash
-curl -X POST https://api.autolib.dev/api/pdf \
+curl -X POST /api/pdf \
   -H "Authorization: Bearer al_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -384,7 +384,7 @@ curl -X POST https://api.autolib.dev/api/pdf \
 ```php
 $response = Http::withHeaders([
     'Authorization' => 'Bearer al_YOUR_KEY',
-])->post('https://api.autolib.dev/api/pdf', [
+])->post('/api/pdf', [
     'html'     => '<h1>Invoice</h1><p>Total: $99</p>',
     'filename' => 'invoice.pdf',
     'paper'    => 'a4',
@@ -396,7 +396,7 @@ file_put_contents('invoice.pdf', $response->body());
 #### JavaScript example
 
 ```javascript
-const response = await fetch('https://api.autolib.dev/api/pdf', {
+const response = await fetch('/api/pdf', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer al_YOUR_KEY',
@@ -447,7 +447,7 @@ Send a transactional email via AWS SES.
 #### Example — single recipient
 
 ```bash
-curl -X POST https://api.autolib.dev/api/email \
+curl -X POST /api/email \
   -H "Authorization: Bearer al_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -471,7 +471,7 @@ curl -X POST https://api.autolib.dev/api/email \
 #### Example — multiple recipients with CC
 
 ```bash
-curl -X POST https://api.autolib.dev/api/email \
+curl -X POST /api/email \
   -H "Authorization: Bearer al_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -496,7 +496,7 @@ curl -X POST https://api.autolib.dev/api/email \
 #### Example — custom sender
 
 ```bash
-curl -X POST https://api.autolib.dev/api/email \
+curl -X POST /api/email \
   -H "Authorization: Bearer al_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -515,7 +515,7 @@ curl -X POST https://api.autolib.dev/api/email \
 ```php
 $response = Http::withHeaders([
     'Authorization' => 'Bearer al_YOUR_KEY',
-])->post('https://api.autolib.dev/api/email', [
+])->post('/api/email', [
     'to'      => 'user@example.com',
     'subject' => 'Hello from AutoLib',
     'html'    => '<h1>Hello!</h1>',
@@ -530,7 +530,7 @@ $data = $response->json();
 #### JavaScript example
 
 ```javascript
-const response = await fetch('https://api.autolib.dev/api/email', {
+const response = await fetch('/api/email', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer al_YOUR_KEY',
@@ -563,7 +563,7 @@ Include the `Authorization: Bearer SANCTUM_TOKEN` header using the token returne
 List all API keys for the authenticated user. Raw key values are never returned — only the prefix and metadata.
 
 ```bash
-curl https://api.autolib.dev/api/keys \
+curl /api/keys \
   -H "Authorization: Bearer SANCTUM_TOKEN"
 ```
 
@@ -590,7 +590,7 @@ curl https://api.autolib.dev/api/keys \
 Generate a new API key. The raw key is returned **once only** — store it immediately.
 
 ```bash
-curl -X POST https://api.autolib.dev/api/keys \
+curl -X POST /api/keys \
   -H "Authorization: Bearer SANCTUM_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"name": "My App"}'
@@ -612,7 +612,7 @@ curl -X POST https://api.autolib.dev/api/keys \
 Revoke an API key. Any requests using this key will immediately return `401`.
 
 ```bash
-curl -X DELETE https://api.autolib.dev/api/keys/2 \
+curl -X DELETE /api/keys/2 \
   -H "Authorization: Bearer SANCTUM_TOKEN"
 ```
 
@@ -629,7 +629,7 @@ curl -X DELETE https://api.autolib.dev/api/keys/2 \
 Get monthly usage summary for all endpoints.
 
 ```bash
-curl https://api.autolib.dev/api/usage \
+curl /api/usage \
   -H "Authorization: Bearer SANCTUM_TOKEN"
 ```
 
@@ -669,7 +669,7 @@ curl https://api.autolib.dev/api/usage \
 
 AutoLib uses Stripe webhooks to sync subscription changes. Configure your webhook endpoint in the Stripe dashboard:
 
-**URL:** `https://api.autolib.dev/stripe/webhook`
+**URL:** `/stripe/webhook`
 
 **Events to enable:**
 
@@ -692,7 +692,7 @@ Official SDKs are coming soon. In the meantime, AutoLib works with any HTTP clie
 ```php
 // Using Laravel HTTP client
 $response = Http::withToken('al_YOUR_KEY')
-    ->post('https://api.autolib.dev/api/scrape', [
+    ->post('/api/scrape', [
         'url'      => 'https://example.com',
         'selector' => 'h1',
     ]);
@@ -701,7 +701,7 @@ $response = Http::withToken('al_YOUR_KEY')
 **JavaScript / Node.js:**
 ```javascript
 // Using fetch (works in Node 18+ and all modern browsers)
-const res = await fetch('https://api.autolib.dev/api/scrape', {
+const res = await fetch('/api/scrape', {
   method: 'POST',
   headers: { 'Authorization': 'Bearer al_YOUR_KEY', 'Content-Type': 'application/json' },
   body: JSON.stringify({ url: 'https://example.com', selector: 'h1' }),
@@ -714,7 +714,7 @@ const data = await res.json();
 import requests
 
 response = requests.post(
-    'https://api.autolib.dev/api/scrape',
+    '/api/scrape',
     headers={'Authorization': 'Bearer al_YOUR_KEY'},
     json={'url': 'https://example.com', 'selector': 'h1'}
 )

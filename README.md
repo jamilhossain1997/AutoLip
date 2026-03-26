@@ -25,7 +25,7 @@ Built for solo developers and small startups who don't want to manage three dash
 # 1. Get an API key at autolib.dev
 # 2. Make your first request
 
-curl -X POST https://api.autolib.dev/api/scrape \
+curl -X POST /api/scrape \
   -H "Authorization: Bearer al_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com", "selector": "h1"}'
@@ -73,7 +73,7 @@ Free tier available — no credit card required.
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/autolib.git
+git clone https://github.com/jamilhossain1997/AutoLip
 cd autolib
 
 # 2. Install PHP dependencies
