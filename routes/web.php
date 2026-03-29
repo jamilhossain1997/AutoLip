@@ -27,11 +27,9 @@ Route::get('/', fn () => auth()->check()
  
 Route::middleware(['auth', 'verified'])->group(function () {
  
-    // Overview
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
  
-    // API Keys
     Route::get('/dashboard/keys',            [DashboardController::class, 'apiKeys'])
         ->name('api-keys.index');
     Route::post('/dashboard/keys',           [DashboardController::class, 'storeApiKey'])
@@ -39,11 +37,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/dashboard/keys/{id}',    [DashboardController::class, 'destroyApiKey'])
         ->name('api-keys.destroy');
  
-    // Usage
     Route::get('/dashboard/usage',           [DashboardController::class, 'usage'])
         ->name('usage.index');
  
-    // Billing
     Route::get('/dashboard/billing',         [DashboardController::class, 'billing'])
         ->name('billing.index');
     Route::post('/dashboard/billing/checkout',[DashboardController::class, 'checkout'])
@@ -51,7 +47,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/dashboard/billing/portal', [DashboardController::class, 'billingPortal'])
         ->name('billing.portal');
  
-    // Stripe webhook (no auth — Stripe signs the payload)
     Route::post('/stripe/webhook', '\Laravel\Cashier\Http\Controllers\WebhookController@handleWebhook')
         ->name('cashier.webhook');
 });

@@ -64,7 +64,7 @@
                 </svg>
                 Billing
             </a>
-            <a href="https://docs.autolib.dev" target="_blank"
+            <a href="https://docs.127.0.0.1:8000/" target="_blank"
                class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
