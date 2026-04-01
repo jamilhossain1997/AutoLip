@@ -6,7 +6,7 @@ WORKDIR /var/www/html
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    libzip-dev zip unzip git curl && \
+    git unzip zip curl libzip-dev libpq-dev nodejs npm && \
     docker-php-ext-install pdo pdo_pgsql zip
 
 # Install Composer
