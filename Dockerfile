@@ -2,10 +2,9 @@ FROM php:8.2-fpm
 
 WORKDIR /var/www/html
 
-# Install system dependencies + PostgreSQL + Node
 RUN apt-get update && apt-get install -y \
     git unzip zip curl libzip-dev libpq-dev nodejs npm \
-    && docker-php-ext-install pdo pdo_pgsql zip
+    && docker-php-ext-install pdo_pgsql zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
