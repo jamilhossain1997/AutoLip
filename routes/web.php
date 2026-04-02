@@ -18,37 +18,44 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/dashboard', fn () => auth()->check()
-    ? redirect()->route('dashboard')
-    : redirect()->route('login')
+Route::get(
+    '/dashboard',
+    fn() => auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login')
 );
- 
-// ── Dashboard (auth required) ──────────────────────────────────────────────────
- 
+
+Route::post('logout', function () {
+    auth()->logout();
+    return redirect('/');
+})->name('logout');
+
+
+
 Route::middleware(['auth', 'verified'])->group(function () {
- 
+
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
- 
+
     Route::get('/dashboard/keys',            [DashboardController::class, 'apiKeys'])
         ->name('api-keys.index');
     Route::post('/dashboard/keys',           [DashboardController::class, 'storeApiKey'])
         ->name('api-keys.store');
     Route::delete('/dashboard/keys/{id}',    [DashboardController::class, 'destroyApiKey'])
         ->name('api-keys.destroy');
- 
+
     Route::get('/dashboard/usage',           [DashboardController::class, 'usage'])
         ->name('usage.index');
- 
+
     Route::get('/dashboard/billing',         [DashboardController::class, 'billing'])
         ->name('billing.index');
-    Route::post('/dashboard/billing/checkout',[DashboardController::class, 'checkout'])
+    Route::post('/dashboard/billing/checkout', [DashboardController::class, 'checkout'])
         ->name('billing.checkout');
     Route::post('/dashboard/billing/portal', [DashboardController::class, 'billingPortal'])
         ->name('billing.portal');
- 
+
     Route::post('/stripe/webhook', '\Laravel\Cashier\Http\Controllers\WebhookController@handleWebhook')
         ->name('cashier.webhook');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
