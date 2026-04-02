@@ -62,7 +62,6 @@ class ScrapeController extends Controller
             }
         }
 
-        // ── Dispatch to correct scraping method ───────────────────
         try {
             if ($jsRender) {
                 $result = $this->scrapeWithBrowser($url, $selector, $attribute, $timeout, $headers);
@@ -94,7 +93,6 @@ class ScrapeController extends Controller
         int $timeout,
         array $headers
     ): array {
-        // Fetch the page
         $response = Http::withHeaders(array_merge([
             'User-Agent' => 'Mozilla/5.0 (compatible; AutoLib/1.0; +https://autolib.dev)',
             'Accept'     => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -110,7 +108,6 @@ class ScrapeController extends Controller
 
         $html = $response->body();
 
-        // No selector? Return raw HTML
         if (! $selector) {
             return [
                 'url'     => $url,
@@ -120,7 +117,6 @@ class ScrapeController extends Controller
             ];
         }
 
-        // Parse with DomCrawler
         $crawler = new Crawler($html, $url);
 
         $results = $crawler->filter($selector)->each(function (Crawler $node) use ($attribute) {
@@ -130,7 +126,6 @@ class ScrapeController extends Controller
             return trim($node->text('', false));
         });
 
-        // Remove nulls (missing attributes return null)
         $results = array_values(array_filter($results, fn($r) => $r !== null && $r !== ''));
 
         return [
@@ -151,8 +146,7 @@ class ScrapeController extends Controller
         int $timeout,
         array $headers
     ): array {
-        // Browsershot wraps Puppeteer — requires: composer require spatie/browsershot
-        // and: npm install puppeteer
+        
         if (! class_exists(\Spatie\Browsershot\Browsershot::class)) {
             throw new \RuntimeException('Browsershot is not installed. Run: composer require spatie/browsershot && npm install puppeteer');
         }
