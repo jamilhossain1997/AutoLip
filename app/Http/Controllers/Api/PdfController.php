@@ -57,10 +57,8 @@ class PdfController extends Controller
         }
 
         try {
-            // ── Get HTML content ───────────────────────────────────
             $html = $this->resolveHtml($validated);
 
-            // ── Configure DomPDF ───────────────────────────────────
             $paper       = $validated['paper'] ?? 'a4';
             $orientation = $validated['orientation'] ?? 'portrait';
             $filename    = $this->sanitizeFilename($validated['filename'] ?? 'document.pdf');
@@ -79,12 +77,10 @@ class PdfController extends Controller
                 $pdfOptions['defaultFontSize'] = $options['font_size'];
             }
 
-            // ── Generate PDF ───────────────────────────────────────
             $pdf = Pdf::loadHTML($html)
                 ->setPaper($paper, $orientation)
                 ->setOptions($pdfOptions);
 
-            // Apply custom margins via CSS injection if provided
             if (! empty($options)) {
                 $html = $this->injectMarginStyles($html, $options);
                 $pdf  = Pdf::loadHTML($html)
@@ -92,7 +88,6 @@ class PdfController extends Controller
                     ->setOptions($pdfOptions);
             }
 
-            // ── Return PDF ─────────────────────────────────────────
             if ($inline) {
                 return $pdf->stream($filename);       // opens in browser tab
             }

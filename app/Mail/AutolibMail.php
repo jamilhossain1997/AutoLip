@@ -18,7 +18,7 @@ class AutolibMail extends Mailable
         private readonly ?string $textBody,
         private readonly ?string $fromName,
         private readonly ?string $fromAddress,
-        private readonly array $replyTo,
+        private readonly array $replyToList,
     ) {}
 
     public function envelope(): Envelope

@@ -83,7 +83,7 @@ class EmailController extends Controller
             textBody:     $validated['text'] ?? null,
             fromName:     $validated['from_name'] ?? null,
             fromAddress:  $validated['from_address'] ?? null,
-            replyTo:      $validated['reply_to'] ?? [],
+            replyToList:      $validated['reply_to'] ?? [],
         );
 
         // ── Send ───────────────────────────────────────────────────
