@@ -1,6 +1,6 @@
 # AutoLib API Reference
 
-**Base URL:** `/api`  
+**Base URL:** `https://autolip.onrender.com`  
 **Version:** 1.0.0
 
 ---
