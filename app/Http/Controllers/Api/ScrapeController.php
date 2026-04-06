@@ -154,13 +154,26 @@ class ScrapeController extends Controller
 
         $browsershot = \Spatie\Browsershot\Browsershot::url($url)
             ->waitUntilNetworkIdle()
-            ->timeout($timeout * 1000)    // Browsershot uses milliseconds
+            ->timeout($timeout * 1000)
             ->dismissDialogs()
-            ->disableJavascript(false);
+            ->disableJavascript(false)
 
-        // Add custom headers
-        foreach ($headers as $key => $value) {
-            $browsershot->setExtraHttpHeaders([$key => $value]);
+            ->addChromiumArguments([
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-gpu',
+            ])
+
+            // 👇 optional but improves stability
+            ->setOption('args', [
+                '--no-sandbox',
+                '--disable-setuid-sandbox'
+            ]);
+
+        // Add custom headers (fixed loop)
+        if (!empty($headers)) {
+            $browsershot->setExtraHttpHeaders($headers);
         }
 
         $html = $browsershot->bodyHtml();
@@ -175,21 +188,21 @@ class ScrapeController extends Controller
         }
 
         $crawler = new Crawler($html, $url);
+
         $results = $crawler->filter($selector)->each(function (Crawler $node) use ($attribute) {
-            if ($attribute) {
-                return $node->attr($attribute);
-            }
-            return trim($node->text('', false));
+            return $attribute
+                ? $node->attr($attribute)
+                : trim($node->text('', false));
         });
 
         $results = array_values(array_filter($results, fn($r) => $r !== null && $r !== ''));
 
         return [
-            'url'     => $url,
+            'url'      => $url,
             'selector' => $selector,
-            'results' => $results,
-            'count'   => count($results),
-            'method'  => 'js_render',
+            'results'  => $results,
+            'count'    => count($results),
+            'method'   => 'js_render',
         ];
     }
 }
