@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\DomCrawler\Crawler;
+use GuzzleHttp\Client;
 
 class ScrapeController extends Controller
 {
@@ -93,47 +94,47 @@ class ScrapeController extends Controller
         int $timeout,
         array $headers
     ): array {
-        $response = Http::withHeaders(array_merge([
-            'User-Agent' => 'Mozilla/5.0 (compatible; AutoLib/1.0; +https://autolib.dev)',
-            'Accept'     => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        ], $headers))
-            ->timeout($timeout)
-            ->get($url);
 
-        if ($response->failed()) {
-            throw new \RuntimeException(
-                "HTTP {$response->status()} returned from {$url}"
-            );
+        $client = new Client([
+            'timeout'         => $timeout,
+            'connect_timeout' => 5,   // max time to connect
+            'headers'         => array_merge([
+                'User-Agent' => 'Mozilla/5.0 (compatible; AutoLib/1.0)',
+                'Accept'     => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Connection' => 'close',   // important for slow servers
+            ], $headers),
+            'read_timeout' => 10, // max idle time between chunks
+        ]);
+
+        $response = $client->request('GET', $url, ['stream' => true]);
+
+        $html = '';
+        foreach ($response->getBody() as $chunk) {
+            $html .= $chunk;
+            // optional: break early if you got enough
+            if (strlen($html) > 1024 * 1024) break; // 1MB max
         }
-
-        $html = $response->body();
 
         if (! $selector) {
             return [
-                'url'     => $url,
-                'html'    => $html,
-                'count'   => 1,
-                'method'  => 'static',
+                'url'    => $url,
+                'html'   => $html,
+                'count'  => 1,
+                'method' => 'static',
             ];
         }
 
         $crawler = new Crawler($html, $url);
-
         $results = $crawler->filter($selector)->each(function (Crawler $node) use ($attribute) {
-            if ($attribute) {
-                return $node->attr($attribute);
-            }
-            return trim($node->text('', false));
+            return $attribute ? $node->attr($attribute) : trim($node->text('', false));
         });
 
-        $results = array_values(array_filter($results, fn($r) => $r !== null && $r !== ''));
-
         return [
-            'url'     => $url,
+            'url'      => $url,
             'selector' => $selector,
-            'results' => $results,
-            'count'   => count($results),
-            'method'  => 'static',
+            'results'  => array_values(array_filter($results)),
+            'count'    => count($results),
+            'method'   => 'static',
         ];
     }
 
@@ -146,7 +147,7 @@ class ScrapeController extends Controller
         int $timeout,
         array $headers
     ): array {
-        
+
         if (! class_exists(\Spatie\Browsershot\Browsershot::class)) {
             throw new \RuntimeException('Browsershot is not installed. Run: composer require spatie/browsershot && npm install puppeteer');
         }
